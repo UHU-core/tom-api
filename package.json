@@ -19,5 +19,13 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
   },
-  "description": ""
+  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/UHU-core/tom-api.git"
+  },
+  "bugs": {
+    "url": "https://github.com/UHU-core/tom-api/issues"
+  },
+  "homepage": "https://github.com/UHU-core/tom-api#readme"
 }
