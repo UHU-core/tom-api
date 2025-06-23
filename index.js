@@ -1,34 +1,21 @@
-require('dotenv').config();
 const express = require('express');
 const fetch = require('node-fetch');
-const { Connection, PublicKey } = require('@solana/web3.js');
+const dotenv = require('dotenv');
+
+// โหลดตัวแปรจาก .env เช่น PORT
+dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-const RPC_URL = process.env.RPC_URL;
-const connection = new Connection(RPC_URL);
-const UHU_TOKEN_MINT = process.env.UHU_TOKEN_MINT;
-
-app.get('/simulate', async (req, res) => {
-  try {
-    const slot = await connection.getSlot();
-    res.json({ status: 'ok', currentSlot: slot });
-  } catch (err) {
-    console.error('Simulation error:', err);
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// ✅ NEW: Price endpoint
+// API ดึงราคาจาก Dexscreener ตาม Mint Address ของ UHU Token
 app.get('/price', async (req, res) => {
   try {
-    const url = `https://api.dexscreener.com/latest/dex/pairs/solana/${UHU_TOKEN_MINT}`;
-    const response = await fetch(url);
+    const response = await fetch('https://api.dexscreener.com/latest/dex/pairs/solana/9wDpfCPZkGqZqouZaWByjhNp138C9nRLz8sb8uvFK1gC');
     const data = await response.json();
-    const price = data?.pairs?.[0]?.priceUsd || null;
+    const price = data?.pairs?.[0]?.priceUsd;
 
-    if (!price) throw new Error('Price not found');
+    if (!price) throw new Error("Price not found");
 
     res.json({ status: 'ok', priceUsd: price });
   } catch (err) {
@@ -37,6 +24,7 @@ app.get('/price', async (req, res) => {
   }
 });
 
+// เริ่มต้นเซิร์ฟเวอร์
 app.listen(port, () => {
   console.log(`TOM API server running at http://localhost:${port}`);
 });
